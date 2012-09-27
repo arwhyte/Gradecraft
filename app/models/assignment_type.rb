@@ -30,6 +30,10 @@ class AssignmentType < ActiveRecord::Base
     user_percentage_set == "true"
   end
   
+  def multiplier_open?
+    course.user_weight_amount_close_date > Date.today
+  end
+  
   def possible_score
     self.assignments.sum(:point_total) || 0
   end
@@ -61,5 +65,15 @@ class AssignmentType < ActiveRecord::Base
   def grade_radio?
     mass_grade_type =="Radio Buttons"
   end
+  
+  #assignment type weights by student  
+  def weights_by_student_id
+    @weights_by_student || user_assignment_type_weights.group_by(&:user_id)
+  end
+  
+  def weights_for_student(student)
+    weights_by_student_id[student.id].try(:first)
+  end
+  
 
 end

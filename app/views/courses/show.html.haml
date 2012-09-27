@@ -28,6 +28,9 @@
     %p
       %b Course Status:
       = @course.status? ? 'Active' : 'Archived'
+    %p
+      %b The Predictor is:
+      = @course.predictor_setting? ? 'On' : 'Off'
   
   %div.well  
     %h4 BADGES
@@ -41,6 +44,9 @@
     %p
       %b Badges will be awarded through...
       = @course.badge_use_scope
+    %p
+      %b Badges are valuable:
+      = @course.badges_value? ? 'Yes' : 'No'
 
   %div.well
     %h4 TEAMS & GROUPS  
@@ -88,6 +94,9 @@
     %p
       %b Multipliers must be set by: 
       = @course.user_weight_amount_close_date
+    %p
+      %b Multiplier/weight term:
+      = @course.multiplier_term
 
 
   %div.span12

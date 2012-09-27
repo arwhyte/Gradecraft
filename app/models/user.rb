@@ -103,7 +103,7 @@ class User < ActiveRecord::Base
     course.grade_level(self)
   end
   
-  def team_grades(course)
+  def team_score(course)
     teams.where(:course_id => course.id).first.try(&:sortable_score) || 0
   end
   
@@ -112,13 +112,12 @@ class User < ActiveRecord::Base
   end
   
   def earned_badges_value(course)
-    # earned_badges.where(:course_id => course.id).map(&:point_value).sum
+    #earned_badges.where(:course_id => course.id).map(&:point_value).sum
     earned_badges.map(&:point_value).sum
   end
  
-  # TODO: rename team_grades or make it return grades and not a score. earned_grades(course) and team_grades(course) should have the same return 'type' (array of grades) to be consistent.
   def earned_grades(course)
-    (course.grades_for_student(self).map(&:score).sum) + earned_badges_value(course) + team_grades(course)
+    (course.grades_for_student(self).map(&:score).sum) + earned_badges_value(course) + team_score(course)
   end
 
   def grades_by_assignment_id
@@ -151,8 +150,6 @@ class User < ActiveRecord::Base
     grades.map(&:score).inject(&:+) || 0
   end
   
-  
-  #TODO CHECK
   def assignment_type_score(assignment_type)
     grades.select { |g| g.assignment.assignment_type_id == assignment_type.id }.map(&:score).inject(&:+) || 0 
   end
@@ -176,17 +173,7 @@ class User < ActiveRecord::Base
   def self.csv_header
     "First Name,Last Name,Email,Username".split(',')
   end
-#     
-#   def self.build_from_csv(row)
-#     # find existing user from email or create new
-#     user = find_or_initialize_by_email(row[2])
-#     user.attributes ={
-#       :first_name => row[0],
-#       :last_name => row[1],
-#       :email => row[3],
-#       :username => row[4]
-#     return user
-#   end
+
   
   #Export Users and Final Scores [TODO need to add final grade]
   def self.to_csv(options = {})
@@ -197,7 +184,6 @@ class User < ActiveRecord::Base
       end
     end
   end
-
 
   # Putting this here just so things don't break... remove if needed.
 

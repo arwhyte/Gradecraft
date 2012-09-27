@@ -1,5 +1,5 @@
 class Course < ActiveRecord::Base
-  attr_accessible :badge_set_ids, :course_grade_scheme_id, :courseno, :name, :semester, :theme_id, :year, :badge_setting, :team_setting, :team_term, :user_term, :user_id, :course_id, :homepage_message, :group_setting, :user_weight_amount, :user_weight_amount_close_date, :team_roles, :section_leader_term, :group_term, :user_weight_amount_type, :has_assignment_submissions, :teams_visible, :badge_use_scope, :multiplier_default
+  attr_accessible :badge_set_ids, :course_grade_scheme_id, :courseno, :name, :semester, :theme_id, :year, :badge_setting, :team_setting, :team_term, :user_term, :user_id, :course_id, :homepage_message, :group_setting, :user_weight_amount, :user_weight_amount_close_date, :team_roles, :section_leader_term, :group_term, :user_weight_amount_type, :has_assignment_submissions, :teams_visible, :badge_use_scope, :multiplier_default, :multiplier_term, :badges_value, :predictor_setting
   
   has_and_belongs_to_many :users, :join_table => :course_memberships, :uniq => true
   accepts_nested_attributes_for :users
@@ -63,6 +63,14 @@ class Course < ActiveRecord::Base
   
   def has_badges?
     badge_setting == true
+  end
+  
+  def valuable_badges?
+    badges_value == true 
+  end
+  
+  def predictor_on?
+    predictor_setting == true
   end
   
   def has_groups?
