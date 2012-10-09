@@ -3,6 +3,18 @@ class AssignmentSubmission < ActiveRecord::Base
   
   include Canable::Ables  
   
+  
+  #has_attached_file :attachment
+  
+  belongs_to :submittable, :polymorphic => :true
+  belongs_to :assignment
+  has_one :grade
+  
+  scope :ungraded
+  
+  validates_presence_of :assignment_id, :submittable_id, :submittable_type
+  
+  
   def updatable_by?(user)
     creator == user
   end
@@ -11,11 +23,17 @@ class AssignmentSubmission < ActiveRecord::Base
     updatable_by?(user)
   end
   
-  #has_attached_file :attachment
   
-  belongs_to :submittable, :polymorphic => :true
-  belongs_to :assignment
+  def status
+    if grade
+      grade.score
+    else
+      "Not yet graded"
+    end
+  end
   
-  validates_presence_of :assignment_id, :submittable_id, :submittable_type
+  def ungraded
+    status == "Not yet graded"
+  end
   
 end

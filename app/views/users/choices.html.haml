@@ -1,0 +1,25 @@
+%div.span2= render 'layouts/admin_subnav'
+
+%div.span8
+  %h3= "#{current_course.multiplier_ref} Choices"
+  %div
+    = form_tag choices_users_path, :method => :get do
+      = select_tag :team_id, options_for_select(current_course.teams.map { |t| [t.name, t.id] }, @team.try(:id)), :prompt => "Select a #{current_course.team_ref}"
+      = submit_tag 'Filter', :class => 'btn'
+
+  %table.table.table-bordered
+    %thead
+    %tr
+      %th #{current_course.user_ref}
+      - @assignment_types.each do |assignment_type|
+        %th= assignment_type.name
+    %tbody
+      - @students.each do |student|
+        %tr 
+          %td= link_to student.name, user_path(student)
+          - @assignment_types.each do |assignment_type|
+            - student.weights_for_assignment_type_id(assignment_type).tap do |weight|
+              - if weight
+                %td= weight.value
+              - else
+                %td
